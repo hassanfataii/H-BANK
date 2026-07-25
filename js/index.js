@@ -73,3 +73,57 @@ showWithdrawBtn.addEventListener("click", () => {
         openTransactionForm(withdrawForm, showWithdrawBtn);
     }
 });
+
+function genAccountNumber(){
+    let accountNum = "";
+    for(let i=0; i<8; i++){
+        let number = Math.floor(Math.random()*10);
+        accountNum+=number;
+    }
+    return accountNum;
+}
+
+function genSortCode(){
+    let sortCode = "";
+    for(let i=0; i<6; i++){
+        let number = Math.floor(Math.random()*10);
+        sortCode+=number;
+    }
+    return `${sortCode.slice(0, 2)}-${sortCode.slice(2, 4)}-${sortCode.slice(4, 6)}`;
+}
+
+function genBalance(){
+    let balance = Math.random()* 4500+500;
+    return Number(balance.toFixed(2));
+}
+
+let currentAccount;
+
+function formatCurrency(amount) {
+    return new Intl.NumberFormat("en-GB", {
+        style: "currency",
+        currency: "GBP"
+    }).format(amount);
+}
+
+createUserForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+    if(createUserInput.value.trim() === ""){
+        createUserInput.setAttribute("placeholder", "Cannot leave name empty");
+        return;
+    }
+    accountSetup.hidden = true;
+    dashboard.hidden = false;
+
+    const userName = createUserInput.value.trim();
+    const generatedAcctNumber = genAccountNumber();
+    const generatedsortCode = genSortCode();
+    const generatedBalance = genBalance();
+
+    currentAccount = new BankAccount(generatedAcctNumber, userName, generatedBalance, generatedsortCode);
+
+    accountHolder.textContent = currentAccount.accountHolder;
+    accountNumber.textContent = currentAccount.accountNumber;
+    sortCode.textContent = currentAccount.sortCode;
+    accountBalance.textContent = formatCurrency(currentAccount.balance);
+});

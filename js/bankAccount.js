@@ -1,8 +1,9 @@
 export class BankAccount{
-    constructor (accountNumber, accountHolder, balance){
+    constructor (accountNumber, accountHolder, balance, sortCode){
         this.accountNumber = accountNumber;
         this.accountHolder = accountHolder;
         this.balance = balance;
+        this.sortCode = sortCode;
     }
 
     deposit(amount){
