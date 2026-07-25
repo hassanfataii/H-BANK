@@ -138,17 +138,6 @@ button:active {
     margin-bottom: 50px;
 }
 
-.transaction-form{
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
-    padding: 30px;
-    border-radius: 10px;
-    text-align: center;
-}
-
 .transaction-history{
     width: 100%;
     display: flex;
@@ -200,6 +189,38 @@ button:active {
 .transaction-history li {
     color: rgba(255, 255, 255, 0.55);
 }
+
+.transaction-form {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    width: 100%;
+    max-height: 0;
+    visibility: hidden;
+    transform: translateY(-12px);
+    transition:
+        max-height 0.45s ease,
+        padding 0.45s ease,
+        margin-top 0.45s ease,
+        opacity 0.3s ease,
+        transform 0.35s ease,
+        border-color 0.35s ease;
+}
+
+.transaction-form.is-open {
+    max-height: 350px;
+    padding: 30px;
+    margin-top: 15px;
+
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    }
 
 @media (max-width: 600px) {
     header {

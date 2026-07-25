@@ -13,7 +13,7 @@
             <p class="logo"><i class="fa-solid fa-money-bill-transfer"></i> H-BANK</p>
         </header>
         <section class="hero">
-            <div class="account-setup">
+            <div class="account-setup" hidden>
                 <h1>WELCOME</h1>
                 <p>Create your simulated account</p>
                 <form action="" class="create-user" id="create-account-form">
@@ -41,7 +41,7 @@
 
                 <section class="transactions">
                     <div class="transaction">
-                        <button type="button" id="deposit-toggle">DEPOSIT</button>
+                        <button type="button" id="deposit-toggle" aria-expanded="false" aria-controls="deposit-form">DEPOSIT</button>
                         <form class="transaction-form" id="deposit-form">
                             <div class="user-details">
                                 <label for="deposit-amount">Enter the amount you'd like to deposit</label>
@@ -51,7 +51,7 @@
                         </form>
                     </div>
                     <div class="transaction">
-                        <button type="button" id="withdraw-toggle">WITHDRAW</button>
+                        <button type="button" id="withdraw-toggle" aria-expanded="false" aria-controls="withdraw-form">WITHDRAW</button>
                         <form id="withdraw-form" class="transaction-form">
                             <div class="user-details">
                                 <label for="withdraw-amount">Enter the amount you'd like to withdraw</label>
