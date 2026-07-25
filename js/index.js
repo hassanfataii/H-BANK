@@ -117,15 +117,16 @@ createUserForm.addEventListener("submit", (e)=>{
 
     const userName = createUserInput.value.trim();
     const generatedAcctNumber = genAccountNumber();
-    const generatedsortCode = genSortCode();
+    const generatedSortCode = genSortCode();
     const generatedBalance = genBalance();
 
-    currentAccount = new BankAccount(generatedAcctNumber, userName, generatedBalance, generatedsortCode);
+    currentAccount = new BankAccount(generatedAcctNumber, userName, generatedBalance, generatedSortCode);
 
     accountHolder.textContent = currentAccount.accountHolder;
     accountNumber.textContent = currentAccount.accountNumber;
     sortCode.textContent = currentAccount.sortCode;
     accountBalance.textContent = formatCurrency(currentAccount.balance);
+    saveData();
 });
 
 const transactions = [];
@@ -162,6 +163,61 @@ function formatDate(date) {
     });
 }
 
+function saveData() {
+    localStorage.setItem(
+        "userAccount",
+        JSON.stringify(currentAccount)
+    );
+
+    localStorage.setItem(
+        "userTransactions",
+        JSON.stringify(transactions)
+    );
+}
+
+function loadData() {
+    const savedAccount = localStorage.getItem("userAccount");
+    const savedTransactions = localStorage.getItem("userTransactions");
+
+    if (!savedAccount) {
+        accountSetup.hidden = false;
+        dashboard.hidden = true;
+        return;
+    }
+
+    const accountData = JSON.parse(savedAccount);
+
+    currentAccount = new BankAccount(
+        accountData.accountNumber,
+        accountData.accountHolder,
+        accountData.balance,
+        accountData.sortCode
+    );
+
+    const parsedTransactions = savedTransactions
+        ? JSON.parse(savedTransactions)
+        : [];
+
+    transactions.length = 0;
+
+    for (const transaction of parsedTransactions) {
+        transactions.push({
+            ...transaction,
+            date: new Date(transaction.date)
+        });
+    }
+
+    accountHolder.textContent = currentAccount.accountHolder;
+    accountNumber.textContent = currentAccount.accountNumber;
+    sortCode.textContent = currentAccount.sortCode;
+    accountBalance.textContent = formatCurrency(currentAccount.balance);
+
+    accountSetup.hidden = true;
+    dashboard.hidden = false;
+
+    renderTransactions();
+}
+
 depositForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
@@ -178,6 +234,7 @@ depositForm.addEventListener("submit", (e) => {
     accountBalance.textContent = formatCurrency(currentAccount.balance);
 
     depositAmount.value = "";
+    saveData();
 });
 
 withdrawForm.addEventListener("submit", (e)=>{
@@ -202,6 +259,7 @@ withdrawForm.addEventListener("submit", (e)=>{
     accountBalance.textContent = formatCurrency(currentAccount.balance);
 
     withdrawAmount.value = "";
+    saveData();
 });
 
 resetAcct.addEventListener("click", () => {
@@ -224,4 +282,8 @@ resetAcct.addEventListener("click", () => {
 
     closeTransactionForm(depositForm, showDepositBtn);
     closeTransactionForm(withdrawForm, showWithdrawBtn);
+    localStorage.removeItem("userAccount");
+    localStorage.removeItem("userTransactions");
 });
+
+loadData();
