@@ -258,6 +258,82 @@ button:active {
     color: #f87171;
 }
 
+@media (max-width: 1050px) {
+    header {
+        margin: 25px auto;
+    }
+
+    .hero {
+        padding: 24px;
+    }
+
+    .account-setup {
+        width: 100%;
+        max-width: 650px;
+        padding: 45px 35px;
+    }
+
+    .create-user {
+        width: 100%;
+        max-width: 450px;
+    }
+
+    .dashboard {
+        width: 100%;
+        max-width: 900px;
+        padding: 45px 35px;
+    }
+
+    .account-details {
+        margin-bottom: 70px;
+    }
+
+    .balance {
+        font-size: 44px;
+    }
+
+    .transactions {
+        width: 100%;
+        gap: 50px;
+    }
+
+    .transaction {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .transaction > button {
+        width: 100%;
+    }
+
+    .transaction-form {
+        padding: 25px 20px;
+    }
+
+    .transaction-form input {
+        width: 100%;
+    }
+
+    .transaction-history {
+        height: 375px;
+    }
+
+    .transaction-history ul {
+        width: 100%;
+        max-width: 750px;
+    }
+
+    .transaction-history li {
+        padding: 0 15px 15px;
+        line-height: 1.6;
+    }
+
+    #reset-account {
+        width: 100%;
+        max-width: 350px;
+    }
+}
+
 @media (max-width: 600px) {
     header {
         margin: 20px auto;
