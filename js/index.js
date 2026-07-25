@@ -127,3 +127,101 @@ createUserForm.addEventListener("submit", (e)=>{
     sortCode.textContent = currentAccount.sortCode;
     accountBalance.textContent = formatCurrency(currentAccount.balance);
 });
+
+const transactions = [];
+
+function renderTransactions() {
+    transactionList.innerHTML = "";
+
+    for (const transaction of transactions) {
+        const detail = document.createElement("li");
+
+        detail.textContent = `${transaction.type}: ${formatCurrency(transaction.amount)} -- DATE: ${formatDate(transaction.date)} -- BALANCE: ${formatCurrency(transaction.balanceAfter)}`;
+
+        transactionList.appendChild(detail);
+    }
+}
+
+function addTransaction(type, amount) {
+    const transaction = {
+        type,
+        amount,
+        date: new Date(),
+        balanceAfter: currentAccount.balance
+    };
+
+    transactions.push(transaction);
+    renderTransactions();
+}
+
+function formatDate(date) {
+    return date.toLocaleDateString("en-GB", {
+        day: "numeric",
+        month: "numeric",
+        year: "numeric"
+    });
+}
+
+depositForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const amount = depositAmount.valueAsNumber;
+
+    if (!Number.isFinite(amount)) {
+        depositAmount.setAttribute("placeholder", "Enter valid number");
+        return;
+    }
+
+    currentAccount.deposit(amount);
+    addTransaction("DEPOSIT", amount);
+
+    accountBalance.textContent = formatCurrency(currentAccount.balance);
+
+    depositAmount.value = "";
+});
+
+withdrawForm.addEventListener("submit", (e)=>{
+    e.preventDefault();
+
+    const amount = withdrawAmount.valueAsNumber;
+    const currentBalance = currentAccount.balance;
+
+    if (!Number.isFinite(amount)) {
+        withdrawAmount.value = "";
+        withdrawAmount.setAttribute("placeholder", "Enter valid number");
+        return;
+    }else if (amount > currentBalance){
+        withdrawAmount.value = "";
+        withdrawAmount.setAttribute("placeholder", "No overdraft withdrawals allowed");
+        return;
+    }
+
+    currentAccount.withdraw(amount);
+    addTransaction("WITHDRAWAL", amount);
+
+    accountBalance.textContent = formatCurrency(currentAccount.balance);
+
+    withdrawAmount.value = "";
+});
+
+resetAcct.addEventListener("click", () => {
+    accountSetup.hidden = false;
+    dashboard.hidden = true;
+
+    currentAccount = null;
+    transactions.length = 0;
+
+    transactionList.innerHTML = "";
+
+    createUserInput.value = "";
+    depositAmount.value = "";
+    withdrawAmount.value = "";
+
+    accountHolder.textContent = "";
+    accountNumber.textContent = "";
+    sortCode.textContent = "";
+    accountBalance.textContent = "";
+
+    closeTransactionForm(depositForm, showDepositBtn);
+    closeTransactionForm(withdrawForm, showWithdrawBtn);
+});

@@ -19,8 +19,4 @@ export class BankAccount{
         this.balance = this.balance - amount;
         return this.balance;
     }
-
-    checkBalance(){
-        return this.balance;
-    }
 }
