@@ -39,6 +39,7 @@ const withdrawForm = document.getElementById("withdraw-form");
 const withdrawAmount = document.getElementById("withdraw-amount");
 const transactionList = document.getElementById("transaction-list");
 const resetAcct = document.getElementById("reset-account");
+const notification = document.getElementById("notification");
 
 function closeTransactionForm(form, toggleButton) {
     form.classList.remove("is-open");
@@ -109,7 +110,7 @@ function formatCurrency(amount) {
 createUserForm.addEventListener("submit", (e)=>{
     e.preventDefault();
     if(createUserInput.value.trim() === ""){
-        createUserInput.setAttribute("placeholder", "Cannot leave name empty");
+        showNotification("Cannot leave name empty", "error");
         return;
     }
     accountSetup.hidden = true;
@@ -127,6 +128,7 @@ createUserForm.addEventListener("submit", (e)=>{
     sortCode.textContent = currentAccount.sortCode;
     accountBalance.textContent = formatCurrency(currentAccount.balance);
     saveData();
+    showNotification("Account created successfully", "success");
 });
 
 const transactions = [];
@@ -217,14 +219,34 @@ function loadData() {
 
     renderTransactions();
 }
+let notificationTimer;
+
+function showNotification(message, type) {
+    clearTimeout(notificationTimer);
+
+    notification.textContent = message;
+    notification.hidden = false;
+
+    notification.classList.remove("success", "error");
+    notification.classList.add(type);
+    notification.classList.add("show");
+
+    notificationTimer = setTimeout(() => {
+        notification.classList.remove("show");
+
+        setTimeout(() => {
+            notification.hidden = true;
+        }, 300);
+    }, 3000);
+}
 
 depositForm.addEventListener("submit", (e) => {
     e.preventDefault();
 
     const amount = depositAmount.valueAsNumber;
 
-    if (!Number.isFinite(amount)) {
-        depositAmount.setAttribute("placeholder", "Enter valid number");
+    if (!Number.isFinite(amount) || amount <= 0) {
+        showNotification("Enter a valid deposit amount", "error");
         return;
     }
 
@@ -235,6 +257,7 @@ depositForm.addEventListener("submit", (e) => {
 
     depositAmount.value = "";
     saveData();
+    showNotification(`${formatCurrency(amount)} deposited successfully`, "success");
 });
 
 withdrawForm.addEventListener("submit", (e)=>{
@@ -243,13 +266,12 @@ withdrawForm.addEventListener("submit", (e)=>{
     const amount = withdrawAmount.valueAsNumber;
     const currentBalance = currentAccount.balance;
 
-    if (!Number.isFinite(amount)) {
-        withdrawAmount.value = "";
-        withdrawAmount.setAttribute("placeholder", "Enter valid number");
+    if (!Number.isFinite(amount) || amount <= 0) {
+        showNotification("Enter a valid withdrawal amount", "error");
         return;
-    }else if (amount > currentBalance){
-        withdrawAmount.value = "";
-        withdrawAmount.setAttribute("placeholder", "No overdraft withdrawals allowed");
+    }
+    if (amount > currentBalance) {
+        showNotification("Insufficient funds for this withdrawal","error");
         return;
     }
 
@@ -260,6 +282,7 @@ withdrawForm.addEventListener("submit", (e)=>{
 
     withdrawAmount.value = "";
     saveData();
+    showNotification(`${formatCurrency(amount)} withdrawn successfully`, "success");
 });
 
 resetAcct.addEventListener("click", () => {
@@ -284,6 +307,8 @@ resetAcct.addEventListener("click", () => {
     closeTransactionForm(withdrawForm, showWithdrawBtn);
     localStorage.removeItem("userAccount");
     localStorage.removeItem("userTransactions");
+
+    showNotification("Account reset successfully", "success");
 });
 
 loadData();
